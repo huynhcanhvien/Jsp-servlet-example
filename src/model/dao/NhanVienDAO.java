@@ -6,23 +6,16 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Data Access Object for NhanVien table
- */
 public class NhanVienDAO {
-    
-    /**
-     * Get all employees
-     * @return List of NhanVien objects
-     */
+
     public List<NhanVien> getAllNhanVien() {
         List<NhanVien> nhanVienList = new ArrayList<>();
         String sql = "SELECT IDNV, HoTen, IDPB, DiaChi FROM nhanvien ORDER BY IDNV";
-        
+
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
+
             while (rs.next()) {
                 NhanVien nhanVien = new NhanVien();
                 nhanVien.setIdNV(rs.getString("IDNV"));
@@ -37,21 +30,16 @@ public class NhanVienDAO {
         }
         return nhanVienList;
     }
-    
-    /**
-     * Get employee by ID
-     * @param idNV Employee ID
-     * @return NhanVien object or null if not found
-     */
+
     public NhanVien getNhanVienById(String idNV) {
         String sql = "SELECT IDNV, HoTen, IDPB, DiaChi FROM nhanvien WHERE IDNV = ?";
-        
+
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, idNV);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 NhanVien nhanVien = new NhanVien();
                 nhanVien.setIdNV(rs.getString("IDNV"));
@@ -66,22 +54,17 @@ public class NhanVienDAO {
         }
         return null;
     }
-    
-    /**
-     * Get employees by department ID
-     * @param idPB Department ID
-     * @return List of NhanVien objects in the department
-     */
+
     public List<NhanVien> getNhanVienByPhongBan(String idPB) {
         List<NhanVien> nhanVienList = new ArrayList<>();
         String sql = "SELECT IDNV, HoTen, IDPB, DiaChi FROM nhanvien WHERE IDPB = ? ORDER BY HoTen";
-        
+
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, idPB);
             ResultSet rs = stmt.executeQuery();
-            
+
             while (rs.next()) {
                 NhanVien nhanVien = new NhanVien();
                 nhanVien.setIdNV(rs.getString("IDNV"));
@@ -96,23 +79,18 @@ public class NhanVienDAO {
         }
         return nhanVienList;
     }
-    
-    /**
-     * Insert new employee
-     * @param nhanVien NhanVien object to insert
-     * @return true if successful, false otherwise
-     */
+
     public boolean insertNhanVien(NhanVien nhanVien) {
         String sql = "INSERT INTO nhanvien (IDNV, HoTen, IDPB, DiaChi) VALUES (?, ?, ?, ?)";
-        
+
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, nhanVien.getIdNV());
             stmt.setString(2, nhanVien.getHoTen());
             stmt.setString(3, nhanVien.getIdPB());
             stmt.setString(4, nhanVien.getDiaChi());
-            
+
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("Error in insertNhanVien: " + e.getMessage());
@@ -120,23 +98,18 @@ public class NhanVienDAO {
             return false;
         }
     }
-    
-    /**
-     * Update existing employee
-     * @param nhanVien NhanVien object with updated information
-     * @return true if successful, false otherwise
-     */
+
     public boolean updateNhanVien(NhanVien nhanVien) {
         String sql = "UPDATE nhanvien SET HoTen = ?, IDPB = ?, DiaChi = ? WHERE IDNV = ?";
-        
+
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, nhanVien.getHoTen());
             stmt.setString(2, nhanVien.getIdPB());
             stmt.setString(3, nhanVien.getDiaChi());
             stmt.setString(4, nhanVien.getIdNV());
-            
+
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("Error in updateNhanVien: " + e.getMessage());
@@ -144,18 +117,13 @@ public class NhanVienDAO {
             return false;
         }
     }
-    
-    /**
-     * Delete employee by ID
-     * @param idNV Employee ID to delete
-     * @return true if successful, false otherwise
-     */
+
     public boolean deleteNhanVien(String idNV) {
         String sql = "DELETE FROM nhanvien WHERE IDNV = ?";
-        
+
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, idNV);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -164,21 +132,16 @@ public class NhanVienDAO {
             return false;
         }
     }
-    
-    /**
-     * Check if employee ID exists
-     * @param idNV Employee ID to check
-     * @return true if exists, false otherwise
-     */
+
     public boolean isNhanVienExists(String idNV) {
         String sql = "SELECT COUNT(*) FROM nhanvien WHERE IDNV = ?";
-        
+
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, idNV);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 return rs.getInt(1) > 0;
             }
@@ -188,22 +151,17 @@ public class NhanVienDAO {
         }
         return false;
     }
-    
-    /**
-     * Search employees by name
-     * @param hoTen Employee name keyword
-     * @return List of matching NhanVien objects
-     */
+
     public List<NhanVien> searchNhanVienByName(String hoTen) {
         List<NhanVien> nhanVienList = new ArrayList<>();
         String sql = "SELECT IDNV, HoTen, IDPB, DiaChi FROM nhanvien WHERE HoTen LIKE ? ORDER BY HoTen";
-        
+
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, "%" + hoTen + "%");
             ResultSet rs = stmt.executeQuery();
-            
+
             while (rs.next()) {
                 NhanVien nhanVien = new NhanVien();
                 nhanVien.setIdNV(rs.getString("IDNV"));
@@ -218,21 +176,17 @@ public class NhanVienDAO {
         }
         return nhanVienList;
     }
-    
-    /**
-     * Get employees with department information (JOIN query)
-     * @return List of NhanVien objects with department names
-     */
+
     public List<NhanVien> getNhanVienWithPhongBan() {
         List<NhanVien> nhanVienList = new ArrayList<>();
         String sql = "SELECT n.IDNV, n.HoTen, n.IDPB, n.DiaChi, p.TenPB " +
-                     "FROM nhanvien n LEFT JOIN phongban p ON n.IDPB = p.IDPB " +
-                     "ORDER BY n.HoTen";
-        
+                "FROM nhanvien n LEFT JOIN phongban p ON n.IDPB = p.IDPB " +
+                "ORDER BY n.HoTen";
+
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
+
             while (rs.next()) {
                 NhanVien nhanVien = new NhanVien();
                 nhanVien.setIdNV(rs.getString("IDNV"));
@@ -247,21 +201,16 @@ public class NhanVienDAO {
         }
         return nhanVienList;
     }
-    
-    /**
-     * Count employees by department
-     * @param idPB Department ID
-     * @return Number of employees in the department
-     */
+
     public int countNhanVienByPhongBan(String idPB) {
         String sql = "SELECT COUNT(*) FROM nhanvien WHERE IDPB = ?";
-        
+
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+
             stmt.setString(1, idPB);
             ResultSet rs = stmt.executeQuery();
-            
+
             if (rs.next()) {
                 return rs.getInt(1);
             }
@@ -271,18 +220,14 @@ public class NhanVienDAO {
         }
         return 0;
     }
-    
-    /**
-     * Count total number of employees
-     * @return Total number of employees
-     */
+
     public int countNhanVien() {
         String sql = "SELECT COUNT(*) FROM nhanvien";
-        
+
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            
+                PreparedStatement stmt = conn.prepareStatement(sql);
+                ResultSet rs = stmt.executeQuery()) {
+
             if (rs.next()) {
                 return rs.getInt(1);
             }
